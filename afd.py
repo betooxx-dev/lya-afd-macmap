@@ -1,21 +1,19 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 import csv
+import os
 import openpyxl
 from docx import Document
 from bs4 import BeautifulSoup
-import os
 
 class MacAFD:
     def __init__(self):
         self.reset()
 
     def reset(self):
-        self.state = 0
+        self.state = 'S'
         self.mac = ""
         self.separator = None
-        self.hex_count = 0
-        self.sep_count = 0
 
     def is_hex(self, char):
         return char.lower() in '0123456789abcdef'
@@ -24,56 +22,73 @@ class MacAFD:
         return char in ':-. '
 
     def transition(self, char):
-        if self.state % 3 == 0 and self.is_hex(char):
-            self.state += 1
-            self.mac += char
-            self.hex_count += 1
-        elif self.state % 3 == 1 and self.is_hex(char):
-            self.state += 1
-            self.mac += char
-            self.hex_count += 1
-        elif self.state % 3 == 2 and self.is_separator(char):
-            if self.separator is None:
-                self.separator = char
-            if char == self.separator or (self.separator == ' ' and char in ':-.'):
-                self.state += 1
+        if self.state == 'S':
+            if char.isspace():
+                pass  # Mantén el estado S
+            elif self.is_hex(char):
+                self.state = '1'
                 self.mac += char
-                self.sep_count += 1
+            else:
+                self.reset()
+        elif self.state == '1':
+            if self.is_hex(char):
+                self.state = '2'
+                self.mac += char
+            else:
+                self.reset()
+        elif self.state == '2':
+            if self.is_separator(char):
+                self.separator = char
+                self.state = '3'
+                self.mac += char
+            else:
+                self.reset()
+        elif self.state in ['3', '6', '9', '12', '15']:
+            if self.is_hex(char):
+                self.state = str(int(self.state) + 1)
+                self.mac += char
+            else:
+                self.reset()
+        elif self.state in ['4', '7', '10', '13', '16']:
+            if self.is_hex(char):
+                self.state = str(int(self.state) + 1)
+                self.mac += char
+            else:
+                self.reset()
+        elif self.state in ['5', '8', '11', '14']:
+            if char == self.separator:
+                self.state = str(int(self.state) + 1)
+                self.mac += char
+            else:
+                self.reset()
+        elif self.state == '17':
+            if char.isspace() or not char:  # Fin de la cadena
+                self.state = 'E'
             else:
                 self.reset()
         else:
             self.reset()
 
     def is_accepted(self):
-        return self.hex_count == 12 and self.sep_count == 5 and len(self.mac) == 17
+        return self.state == 'E' and len(self.mac) == 17
 
 def find_valid_macs(text):
     afd = MacAFD()
     valid_macs = []
-    current_mac_start = 0
+    start_index = 0
 
     for i, char in enumerate(text):
-        if afd.state == 0:
-            current_mac_start = i
+        if afd.state == 'S':
+            start_index = i
         afd.transition(char)
-        if afd.is_accepted():
-            is_valid = True
-            if current_mac_start > 0:
-                prev_char = text[current_mac_start - 1]
-                if afd.is_hex(prev_char):
-                    is_valid = False
-            if i + 1 < len(text):
-                next_char = text[i + 1]
-                if afd.is_hex(next_char):
-                    is_valid = False
-            
-            if is_valid:
-                valid_macs.append((afd.mac, current_mac_start))
+        if afd.state == 'E':
+            valid_macs.append((afd.mac, start_index))
             afd.reset()
-        elif char.isspace() and not afd.is_separator(char):
-            afd.reset()
-        elif not afd.is_hex(char) and not afd.is_separator(char):
-            afd.reset()
+
+    # Manejar el caso del final de la cadena
+    afd.transition('')
+    if afd.state == 'E':
+        valid_macs.append((afd.mac, start_index))
 
     return valid_macs
 
@@ -175,16 +190,16 @@ class MacRecognizer:
 
     def read_docx(self, file_path):
         doc = Document(file_path)
-        return [[paragraph.text] for paragraph in doc.paragraphs if paragraph.text.strip()]
+        return [[paragraph.text] for paragraph in doc.paragraphs]
 
     def read_html(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as htmlfile:
             soup = BeautifulSoup(htmlfile, 'html.parser')
-            return [[element.get_text(strip=True)] for element in soup.find_all(['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']) if element.get_text(strip=True)]
+            return [[element.get_text()] for element in soup.find_all(['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])]
 
     def read_txt(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as txtfile:
-            return [line.strip() for line in txtfile if line.strip()]
+            return [line for line in txtfile]
 
     def start_analysis(self):
         self.start_button.config(state='disabled')
@@ -251,3 +266,4 @@ class MacRecognizer:
 if __name__ == "__main__":
     app = MacRecognizer()
     app.run()
+    
