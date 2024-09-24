@@ -1,0 +1,53 @@
+1. Direcciones MAC válidas con diferentes separadores:
+   11:22:33:44:55:66
+   aa-bb-cc-dd-ee-ff
+   00 11 22 33 44 55
+
+2. Direcciones MAC inválidas:
+   11:22:33:44:55:6G (G no es un dígito hexadecimal válido)
+   11-22-33-44-55-66-77 (demasiados grupos)
+   11:22:33:44:55 (faltan dígitos)
+
+3. Mezcla de separadores (deben ser inválidas):
+   11:22-33 44:55:66
+   aa-bb:cc dd:ee-ff
+
+4. Casos límite:
+   00:00:00:00:00:00
+   FF:FF:FF:FF:FF:FF
+   ff:ff:ff:ff:ff:ff
+
+5. Parte de cadenas más largas (deben ser inválidas):
+   ethernet11:22:33:44:55:66adapter
+   pre-aa-bb-cc-dd-ee-ff-post
+
+6. Múltiples direcciones MAC en una línea:
+   Válidas: 11:22:33:44:55:66 y aa-bb-cc-dd-ee-ff y 00 11 22 33 44 55
+   Mezcladas: 11:22:33:44:55:66 y aa-bb-cc-dd-ee-GG y 00 11 22 33 44 55
+
+7. Direcciones MAC con espacios adicionales:
+     11:22:33:44:55:66   
+   aa-bb-cc-dd-ee-ff  
+
+8. Casos de mayúsculas y minúsculas:
+   AA:BB:CC:DD:EE:FF
+   aa:bb:cc:dd:ee:ff
+   Aa:Bb:Cc:Dd:Ee:Ff
+
+9. Direcciones MAC incompletas:
+   11:22:33:44:5
+   aa-bb-cc-dd-ee-
+   00 11 22 33 44
+
+10. Texto sin direcciones MAC:
+    Este es un texto que no contiene ninguna dirección MAC válida.
+
+11. Direcciones MAC con caracteres no válidos entre medio:
+    11:22:33X44:55:66
+    aa-bb-cc!dd-ee-ff
+    00 11 22 @ 33 44 55
+
+12. Casos de borde con caracteres antes y después:
+    A11:22:33:44:55:66
+    aa-bb-cc-dd-ee-ffG
+    Z00 11 22 33 44 55B
