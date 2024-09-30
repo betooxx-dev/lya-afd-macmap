@@ -8,90 +8,269 @@ from bs4 import BeautifulSoup
 
 class MacAFD:
     def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.state = 'S'
-        self.mac = ""
-        self.separator = None
+        self.state = 'q0'
 
     def is_hex(self, char):
         return char.lower() in '0123456789abcdef'
 
-    def is_separator(self, char):
-        return char in ':-. '
-
     def transition(self, char):
-        if self.state == 'S':
+        if self.state == 'q0':
             if char.isspace():
-                pass  # Mantén el estado S
+                self.state = 'q0'
             elif self.is_hex(char):
-                self.state = '1'
-                self.mac += char
+                self.state = 'q1'
             else:
-                self.reset()
-        elif self.state == '1':
+                self.state = 'q0'
+        elif self.state == 'q1':
             if self.is_hex(char):
-                self.state = '2'
-                self.mac += char
+                self.state = 'q2'
             else:
-                self.reset()
-        elif self.state == '2':
-            if self.is_separator(char):
-                self.separator = char
-                self.state = '3'
-                self.mac += char
+                self.state = 'q0'
+        elif self.state == 'q2':
+            if char == ':':
+                self.state = 'q3'
+            elif char == '-':
+                self.state = 'q4'
+            elif char.isspace():
+                self.state = 'q5'
             else:
-                self.reset()
-        elif self.state in ['3', '6', '9', '12', '15']:
+                self.state = 'q0'
+        elif self.state == 'q3':
             if self.is_hex(char):
-                self.state = str(int(self.state) + 1)
-                self.mac += char
+                self.state = 'q6'
             else:
-                self.reset()
-        elif self.state in ['4', '7', '10', '13', '16']:
+                self.state = 'q0'
+        elif self.state == 'q4':
             if self.is_hex(char):
-                self.state = str(int(self.state) + 1)
-                self.mac += char
+                self.state = 'q7'
             else:
-                self.reset()
-        elif self.state in ['5', '8', '11', '14']:
-            if char == self.separator:
-                self.state = str(int(self.state) + 1)
-                self.mac += char
+                self.state = 'q0'
+        elif self.state == 'q5':
+            if self.is_hex(char):
+                self.state = 'q8'
             else:
-                self.reset()
-        elif self.state == '17':
-            if char.isspace() or not char:  # Fin de la cadena
-                self.state = 'E'
+                self.state = 'q0'
+        elif self.state == 'q6':
+            if self.is_hex(char):
+                self.state = 'q9'
             else:
-                self.reset()
-        else:
-            self.reset()
+                self.state = 'q0'
+        elif self.state == 'q7':
+            if self.is_hex(char):
+                self.state = 'q10'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q8':
+            if self.is_hex(char):
+                self.state = 'q11'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q9':
+            if char == ':':
+                self.state = 'q12'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q10':
+            if char == '-':
+                self.state = 'q13'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q11':
+            if char.isspace():
+                self.state = 'q14'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q12':
+            if self.is_hex(char):
+                self.state = 'q15'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q13':
+            if self.is_hex(char):
+                self.state = 'q16'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q14':
+            if self.is_hex(char):
+                self.state = 'q17'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q15':
+            if self.is_hex(char):
+                self.state = 'q18'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q16':
+            if self.is_hex(char):
+                self.state = 'q19'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q17':
+            if self.is_hex(char):
+                self.state = 'q20'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q18':
+            if char == ':':
+                self.state = 'q21'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q19':
+            if char == '-':
+                self.state = 'q22'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q20':
+            if char.isspace():
+                self.state = 'q23'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q21':
+            if self.is_hex(char):
+                self.state = 'q24'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q22':
+            if self.is_hex(char):
+                self.state = 'q25'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q23':
+            if self.is_hex(char):
+                self.state = 'q26'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q24':
+            if self.is_hex(char):
+                self.state = 'q27'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q25':
+            if self.is_hex(char):
+                self.state = 'q28'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q26':
+            if self.is_hex(char):
+                self.state = 'q29'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q27':
+            if char == ':':
+                self.state = 'q30'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q28':
+            if char == '-':
+                self.state = 'q31'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q29':
+            if char.isspace():
+                self.state = 'q32'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q30':
+            if self.is_hex(char):
+                self.state = 'q33'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q31':
+            if self.is_hex(char):
+                self.state = 'q34'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q32':
+            if self.is_hex(char):
+                self.state = 'q35'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q33':
+            if self.is_hex(char):
+                self.state = 'q36'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q34':
+            if self.is_hex(char):
+                self.state = 'q37'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q35':
+            if self.is_hex(char):
+                self.state = 'q38'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q36':
+            if char == ':':
+                self.state = 'q39'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q37':
+            if char == '-':
+                self.state = 'q40'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q38':
+            if char.isspace():
+                self.state = 'q41'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q39':
+            if self.is_hex(char):
+                self.state = 'q42'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q40':
+            if self.is_hex(char):
+                self.state = 'q42'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q41':
+            if self.is_hex(char):
+                self.state = 'q42'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q42':
+            if self.is_hex(char):
+                self.state = 'q43'
+            else:
+                self.state = 'q0'
+        elif self.state == 'q43':
+            if char.isspace() or not char:  
+                self.state = 'q44'
+            else:
+                self.state = 'q0'
 
     def is_accepted(self):
-        return self.state == 'E' and len(self.mac) == 17
+        return self.state == 'q44'
 
 def find_valid_macs(text):
     afd = MacAFD()
     valid_macs = []
+    current_mac = ""
     start_index = 0
 
     for i, char in enumerate(text):
-        if afd.state == 'S':
-            start_index = i
+        prev_state = afd.state
         afd.transition(char)
-        if afd.state == 'E':
-            valid_macs.append((afd.mac, start_index))
-            afd.reset()
+        
+        if prev_state == 'q0' and afd.state == 'q1':
+            start_index = i
+            current_mac = char
+        elif afd.state != 'q0':
+            current_mac += char
+        
+        if afd.is_accepted():
+            valid_macs.append((current_mac.strip(), start_index))
+            current_mac = ""
+            afd = MacAFD()  # Reiniciamos el afd pro
 
     # Manejar el caso del final de la cadena
     afd.transition('')
-    if afd.state == 'E':
-        valid_macs.append((afd.mac, start_index))
+    if afd.is_accepted():
+        valid_macs.append((current_mac.strip(), start_index))
 
     return valid_macs
-
 class MacRecognizer:
     def __init__(self):
         self.window = tk.Tk()
