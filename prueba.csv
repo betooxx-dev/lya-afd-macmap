@@ -1,17 +1,31 @@
-MAC,Fila,Columna,Posición
-11:22:33:44:55:66,2,1,3
-aa-bb-cc-dd-ee-ff,3,1,3
-00 11 22 33 44 55,4,1,3
-00:00:00:00:00:00,16,1,3
-FF:FF:FF:FF:FF:FF,17,1,3
-ff:ff:ff:ff:ff:ff,18,1,3
-11:22:33:44:55:66,25,1,12
-aa-bb-cc-dd-ee-ff,25,1,32
-00 11 22 33 44 55,25,1,52
-11:22:33:44:55:66,26,1,14
-00 11 22 33 44 55,26,1,54
-11:22:33:44:55:66,29,1,5
-aa-bb-cc-dd-ee-ff,30,1,3
-AA:BB:CC:DD:EE:FF,33,1,3
-aa:bb:cc:dd:ee:ff,34,1,3
-Aa:Bb:Cc:Dd:Ee:Ff,35,1,3
+Categoría,Descripción,Dirección MAC
+1,Dirección MAC válida con separador (:),11:22:33:44:55:66
+1,Dirección MAC válida con separador (-),aa-bb-cc-dd-ee-ff
+1,Dirección MAC válida con separador (espacio),00 11 22 33 44 55
+2,Dirección MAC inválida (carácter no hexadecimal),11:22:33:44:55:6G
+2,Dirección MAC inválida (demasiados grupos),11-22-33-44-55-66-77
+2,Dirección MAC inválida (faltan dígitos),11:22:33:44:55
+3,Dirección MAC inválida (mezcla de separadores),11:22-33 44:55:66
+3,Dirección MAC inválida (mezcla de separadores),aa-bb:cc dd:ee-ff
+4,Dirección MAC válida (caso límite),00:00:00:00:00:00
+4,Dirección MAC válida (caso límite),FF:FF:FF:FF:FF:FF
+4,Dirección MAC válida (caso límite),ff:ff:ff:ff:ff:ff
+5,Dirección MAC inválida (parte de cadena más larga),ethernet11:22:33:44:55:66adapter
+5,Dirección MAC inválida (parte de cadena más larga),pre-aa-bb-cc-dd-ee-ff-post
+6,Múltiples direcciones MAC válidas en una línea,esto no es una mac y aa-bb-cc-dd-ee-ff y 00 11 22 33 44 55
+6,Múltiples direcciones MAC (mezcladas válidas e inválidas),11:22:33:44:55:66 y aa-bb-cc-dd-ee-GG y 00 11 22 33 44 55
+7,Dirección MAC válida con espacios adicionales,11:22:33:44:55:66
+7,Dirección MAC válida con espacios adicionales,aa-bb-cc-dd-ee-ff
+8,Dirección MAC válida (mayúsculas),AA:BB:CC:DD:EE:FF
+8,Dirección MAC válida (minúsculas),aa:bb:cc:dd:ee:ff
+8,Dirección MAC válida (mezcla de mayúsculas y minúsculas),Aa:Bb:Cc:Dd:Ee:Ff
+9,Dirección MAC incompleta,11:22:33:44:5
+9,Dirección MAC incompleta,aa-bb-cc-dd-ee-
+9,Dirección MAC incompleta,00 11 22 33 44
+10,Texto sin direcciones MAC,Este es un texto que no contiene ninguna dirección MAC válida.
+11,Dirección MAC inválida (carácter no válido entre medio),11:22:33X44:55:66
+11,Dirección MAC inválida (carácter no válido entre medio),aa-bb-cc!dd-ee-ff
+11,Dirección MAC inválida (carácter no válido entre medio),00 11 22 @ 33 44 55
+12,Dirección MAC inválida (carácter antes),A11:22:33:44:55:66
+12,Dirección MAC inválida (carácter después),aa-bb-cc-dd-ee-ffG
+12,Dirección MAC inválida (caracteres antes y después),Z00 11 22 33 44 55B

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Reconocimiento de Direcciones MAC</title>
+</head>
+<body>
+    <h1>Prueba de Reconocimiento de Direcciones MAC</h1>
+    
+    <h2>Direcciones MAC válidas:</h2>
+    <p>1. Dirección MAC estándar: <span>00:1A:2B:3C:4D:5E</span></p>
+    <p>2. Dirección MAC con guiones: <span>11-22-33-44-55-66</span></p>
+    <div>3. Dirección MAC con espacios: 
+        <span>AA BB CC DD EE FF</span>
+    </div>
+    
+    <h2>Direcciones MAC inválidas:</h2>
+    <p>4. Demasiado larga: <span>00:11:22:33:44:55:66</span></p>
+    <p>5. Demasiado corta: <span>AA:BB:CC:DD:EE</span></p>
+    <div>6. Caracteres no válidos: <span>GG:HH:II:JJ:KK:LL</span></div>
+    <p>7. Mezcla de separadores: <span>12:34-56 78:90:AB</span></p>
+    
+    <h2>Casos límite:</h2>
+    <p>8. Con espacios adicionales: <span>  CC : DD : EE : FF : 00 : 11  </span></p>
+    <div>9. Parte de una cadena más larga: <span>prefix-AA:BB:CC:DD:EE:FF-suffix</span></div>
+    <p>10. Sin separadores: <span>AABBCCDDEEFF</span></p>
+    
+    <h4>Dirección MAC en un encabezado:</h4>
+    <h5>11. <span>FF:EE:DD:CC:BB:AA</span></h5>
+    
+    <h6>Casos adicionales:</h6>
+    <p>12. MAC con punto como separador: <span>AA.BB.CC.DD.EE.FF</span></p>
+    <div>13. MAC incompleta: 
+        <span>00:11:22:33:44:</span>
+    </div>
+</body>
+</html>

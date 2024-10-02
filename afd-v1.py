@@ -263,14 +263,15 @@ def find_valid_macs(text):
         if afd.is_accepted():
             valid_macs.append((current_mac.strip(), start_index))
             current_mac = ""
-            afd = MacAFD()  # Reiniciamos el afd pro
-
-    # Manejar el caso del final de la cadena
+            afd = MacAFD()  
+            
+    
     afd.transition('')
     if afd.is_accepted():
         valid_macs.append((current_mac.strip(), start_index))
 
     return valid_macs
+
 class MacRecognizer:
     def __init__(self):
         self.window = tk.Tk()
@@ -359,22 +360,28 @@ class MacRecognizer:
         sheet = workbook.active
         content = []
         for row in sheet.iter_rows(values_only=True):
-            content.append([str(cell) if cell is not None else '' for cell in row])
+            content.append(' '.join(str(cell) if cell is not None else '' for cell in row))
         return content
 
     def read_csv(self, file_path):
         with open(file_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
-            return list(reader)
+            return [' '.join(row) for row in reader]
 
     def read_docx(self, file_path):
         doc = Document(file_path)
-        return [[paragraph.text] for paragraph in doc.paragraphs]
+        return [paragraph.text for paragraph in doc.paragraphs]
+
+    def read_txt(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as txtfile:
+            return [line.strip() for line in txtfile if line.strip()]
 
     def read_html(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as htmlfile:
             soup = BeautifulSoup(htmlfile, 'html.parser')
-            return [[element.get_text()] for element in soup.find_all(['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])]
+            text = soup.get_text(separator=' ', strip=True)
+            text = ' '.join(text.split())
+            return [text]
 
     def read_txt(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as txtfile:
@@ -404,16 +411,10 @@ class MacRecognizer:
 
     def find_macs_in_content(self, content):
         valid_macs = []
-        for row_num, row in enumerate(content, start=1):
-            if isinstance(row, list):
-                for col_num, cell in enumerate(row, start=1):
-                    macs = find_valid_macs(cell)
-                    for mac, position in macs:
-                        valid_macs.append((mac, row_num, col_num, position))
-            else:
-                macs = find_valid_macs(row)
-                for mac, position in macs:
-                    valid_macs.append((mac, row_num, 1, position))
+        for row_num, line in enumerate(content, start=1):
+            macs = find_valid_macs(line)
+            for mac, position in macs:
+                valid_macs.append((mac, row_num, 1, position))
         return valid_macs
 
     def show_results(self, valid_macs):

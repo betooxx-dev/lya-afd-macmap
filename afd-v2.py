@@ -6,61 +6,59 @@ import openpyxl
 from docx import Document
 from bs4 import BeautifulSoup
 
-transitions = {
-    ('q0', 'hex'): 'q1',
-    ('q0', 'space'): 'q0',
-    ('q1', 'hex'): 'q2',
-    ('q2', ':'): 'q3',
-    ('q2', '-'): 'q4',
-    ('q2', 'space'): 'q5',
-    ('q3', 'hex'): 'q6',
-    ('q4', 'hex'): 'q7',
-    ('q5', 'hex'): 'q8',
-    ('q6', 'hex'): 'q9',
-    ('q7', 'hex'): 'q10',
-    ('q8', 'hex'): 'q11',
-    ('q9', ':'): 'q12',
-    ('q10', '-'): 'q13',
-    ('q11', 'space'): 'q14',
-    ('q12', 'hex'): 'q15',
-    ('q13', 'hex'): 'q16',
-    ('q14', 'hex'): 'q17',
-    ('q15', 'hex'): 'q18',
-    ('q16', 'hex'): 'q19',
-    ('q17', 'hex'): 'q20',
-    ('q18', ':'): 'q21',
-    ('q19', '-'): 'q22',
-    ('q20', 'space'): 'q23',
-    ('q21', 'hex'): 'q24',
-    ('q22', 'hex'): 'q25',
-    ('q23', 'hex'): 'q26',
-    ('q24', 'hex'): 'q27',
-    ('q25', 'hex'): 'q28',
-    ('q26', 'hex'): 'q29',
-    ('q27', ':'): 'q30',
-    ('q28', '-'): 'q31',
-    ('q29', 'space'): 'q32',
-    ('q30', 'hex'): 'q33',
-    ('q31', 'hex'): 'q34',
-    ('q32', 'hex'): 'q35',
-    ('q33', 'hex'): 'q36',
-    ('q34', 'hex'): 'q37',
-    ('q35', 'hex'): 'q38',
-    ('q36', ':'): 'q39',
-    ('q37', '-'): 'q40',
-    ('q38', 'space'): 'q41',
-    ('q39', 'hex'): 'q42',
-    ('q40', 'hex'): 'q42',
-    ('q41', 'hex'): 'q42',
-    ('q42', 'hex'): 'q43',
-    ('q43', 'space'): 'q44',
-    ('q43', 'end'): 'q44'
-}
-
 class MacAFD:
     def __init__(self):
         self.state = 'q0'
-        self.transitions = transitions
+        self.transitions = {
+            ('q0', 'hex'): 'q1',
+            ('q0', 'space'): 'q0',
+            ('q1', 'hex'): 'q2',
+            ('q2', ':'): 'q3',
+            ('q2', '-'): 'q4',
+            ('q2', 'space'): 'q5',
+            ('q3', 'hex'): 'q6',
+            ('q4', 'hex'): 'q7',
+            ('q5', 'hex'): 'q8',
+            ('q6', 'hex'): 'q9',
+            ('q7', 'hex'): 'q10',
+            ('q8', 'hex'): 'q11',
+            ('q9', ':'): 'q12',
+            ('q10', '-'): 'q13',
+            ('q11', 'space'): 'q14',
+            ('q12', 'hex'): 'q15',
+            ('q13', 'hex'): 'q16',
+            ('q14', 'hex'): 'q17',
+            ('q15', 'hex'): 'q18',
+            ('q16', 'hex'): 'q19',
+            ('q17', 'hex'): 'q20',
+            ('q18', ':'): 'q21',
+            ('q19', '-'): 'q22',
+            ('q20', 'space'): 'q23',
+            ('q21', 'hex'): 'q24',
+            ('q22', 'hex'): 'q25',
+            ('q23', 'hex'): 'q26',
+            ('q24', 'hex'): 'q27',
+            ('q25', 'hex'): 'q28',
+            ('q26', 'hex'): 'q29',
+            ('q27', ':'): 'q30',
+            ('q28', '-'): 'q31',
+            ('q29', 'space'): 'q32',
+            ('q30', 'hex'): 'q33',
+            ('q31', 'hex'): 'q34',
+            ('q32', 'hex'): 'q35',
+            ('q33', 'hex'): 'q36',
+            ('q34', 'hex'): 'q37',
+            ('q35', 'hex'): 'q38',
+            ('q36', ':'): 'q39',
+            ('q37', '-'): 'q40',
+            ('q38', 'space'): 'q41',
+            ('q39', 'hex'): 'q42',
+            ('q40', 'hex'): 'q42',
+            ('q41', 'hex'): 'q42',
+            ('q42', 'hex'): 'q43',
+            ('q43', 'space'): 'q44',
+            ('q43', 'end'): 'q44'
+        }
 
     def is_hex(self, char):
         return char.lower() in '0123456789abcdef'
@@ -199,22 +197,28 @@ class MacRecognizer:
         sheet = workbook.active
         content = []
         for row in sheet.iter_rows(values_only=True):
-            content.append([str(cell) if cell is not None else '' for cell in row])
+            content.append(' '.join(str(cell) if cell is not None else '' for cell in row))
         return content
 
     def read_csv(self, file_path):
         with open(file_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
-            return list(reader)
+            return [' '.join(row) for row in reader]
 
     def read_docx(self, file_path):
         doc = Document(file_path)
-        return [[paragraph.text] for paragraph in doc.paragraphs]
+        return [paragraph.text for paragraph in doc.paragraphs]
+
+    def read_txt(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as txtfile:
+            return [line.strip() for line in txtfile if line.strip()]
 
     def read_html(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as htmlfile:
             soup = BeautifulSoup(htmlfile, 'html.parser')
-            return [[element.get_text()] for element in soup.find_all(['p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])]
+            text = soup.get_text(separator=' ', strip=True)
+            text = ' '.join(text.split())
+            return [text]
 
     def read_txt(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as txtfile:
@@ -244,16 +248,10 @@ class MacRecognizer:
 
     def find_macs_in_content(self, content):
         valid_macs = []
-        for row_num, row in enumerate(content, start=1):
-            if isinstance(row, list):
-                for col_num, cell in enumerate(row, start=1):
-                    macs = find_valid_macs(cell)
-                    for mac, position in macs:
-                        valid_macs.append((mac, row_num, col_num, position))
-            else:
-                macs = find_valid_macs(row)
-                for mac, position in macs:
-                    valid_macs.append((mac, row_num, 1, position))
+        for row_num, line in enumerate(content, start=1):
+            macs = find_valid_macs(line)
+            for mac, position in macs:
+                valid_macs.append((mac, row_num, 1, position))
         return valid_macs
 
     def show_results(self, valid_macs):
@@ -281,6 +279,7 @@ class MacRecognizer:
 
     def run(self):
         self.window.mainloop()
+
 
 if __name__ == "__main__":
     app = MacRecognizer()
