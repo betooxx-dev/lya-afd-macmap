@@ -1,17 +1,13 @@
 # Q: Conjunto de estados
-
 Q = {q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26, q27, q28, q29, q30, q31, q32, q33, q34, q35, q36, q37, q38, q39, q40, q41, q42, q43, q44}
 
 # Σ: Alfabeto de entrada
-
-Σ = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, a, b, c, d, e, f, :, -, espacio}
+Σ = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, a, b, c, d, e, f, :, -, espacio, λ}
 
 # δ: Función de transición
-
 δ: Q × Σ → Q
 
 La función de transición se define como sigue:
-
 δ(q0, espacio) = q0
 δ(q0, hex) = q1, donde hex ∈ {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, a, b, c, d, e, f}
 δ(q1, hex) = q2
@@ -64,9 +60,7 @@ La función de transición se define como sigue:
 Para cualquier otro par (q, a) no listado arriba, δ(q, a) = q0
 
 # q0: Estado inicial
-
 q0 = q0
 
 # F: Conjunto de estados de aceptación
-
 F = {q44}
